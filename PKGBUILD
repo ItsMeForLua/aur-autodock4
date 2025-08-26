@@ -1,50 +1,34 @@
-# Maintainer: Andrew D. France <andrewforlua@gmail.com>
+# Maintainer: Andrew <andrewforlua@gmail.com>
 pkgname=autodock4
 pkgver=4.2.6
-pkgrel=1
+pkgrel=2
 pkgdesc="Automated docking of flexible ligands to proteins"
 arch=('x86_64' 'i686')
-url="http://autodock.scripps.edu/"
+url="https://github.com/ccsb-scripps/AutoDock4"
 license=('GPL')
 depends=('gcc-libs')
-makedepends=('gcc' 'make' 'tcsh')
-source=("http://autodock.scripps.edu/downloads/autodock-registration/tars/dist426/autodocksuite-${pkgver}-src.tar.gz")
-sha256sums=('4b24ce4baf216a5e1a6a79bb664eeed684aed17cede64ff0061aa1bcc17874c4')
+makedepends=('gcc' 'make' 'tcsh' 'autoconf' 'automake')
+source=("autodock4-$pkgver.tar.gz::https://github.com/ccsb-scripps/AutoDock4/archive/refs/heads/master.tar.gz"
+        "autogrid4-$pkgver.tar.gz::https://github.com/ccsb-scripps/AutoGrid/archive/refs/heads/master.tar.gz")
+sha256sums=('1c44e7b6f0ea8a59aae8f4701ad5cbaa4c1b55e32549d3189af663349126b834'
+            'd3eed098d75a7d7189e9986f575ab7eff12fd932abb57005831f64b763a450fa')
 
 build() {
-    cd "$srcdir/src/autodock"
+    # Build AutoDock4
+    cd "$srcdir/AutoDock4-master"
     
     echo "==> Configuring AutoDock..."
+    autoreconf -i
     ./configure --prefix=/usr
-    
-    echo "==> Manually generating parameter header..."
-    # Generate the header file using the same logic as the csh script
-    cat > default_parameters.h << 'EOF'
-const char *param_string_4_0[MAX_LINES] = {
-EOF
-    
-    # Process first parameter file AD4_parameters.dat
-    egrep -v '^#|^$' ./AD4_parameters.dat | sed 's/\(.*\)$/"\1\\n", /' >> default_parameters.h
-    
-    cat >> default_parameters.h << 'EOF'
- };
-const char *param_string_4_1[MAX_LINES] = {
-EOF
-    
-    # Process second parameter file AD4.1_bound.dat
-    egrep -v '^#|^$' ./AD4.1_bound.dat | sed 's/\(.*\)$/"\1\\n", /' >> default_parameters.h
-    
-    cat >> default_parameters.h << 'EOF'
- };
-// EOF
-EOF
     
     echo "==> Building AutoDock..."
     make
     
-    cd "$srcdir/src/autogrid"
+    # Build AutoGrid4
+    cd "$srcdir/AutoGrid-master"
     
     echo "==> Configuring AutoGrid..."
+    autoreconf -i
     ./configure --prefix=/usr
     
     echo "==> Building AutoGrid..."
@@ -52,8 +36,13 @@ EOF
 }
 
 package() {
-    install -Dm755 "$srcdir/src/autodock/autodock4" "$pkgdir/usr/bin/autodock4"
-    install -Dm755 "$srcdir/src/autogrid/autogrid4" "$pkgdir/usr/bin/autogrid4"
-    install -Dm644 "$srcdir/src/README" "$pkgdir/usr/share/doc/$pkgname/README"
-    install -Dm644 "$srcdir/src/RELEASENOTES" "$pkgdir/usr/share/doc/$pkgname/RELEASENOTES"
+    # Install AutoDock binary
+    install -Dm755 "$srcdir/AutoDock4-master/autodock4" "$pkgdir/usr/bin/autodock4"
+    
+    # Install AutoGrid binary
+    install -Dm755 "$srcdir/AutoGrid-master/autogrid4" "$pkgdir/usr/bin/autogrid4"
+    
+    # Install documentation
+    install -Dm644 "$srcdir/AutoDock4-master/README" "$pkgdir/usr/share/doc/$pkgname/README"
+    install -Dm644 "$srcdir/AutoDock4-master/COPYING" "$pkgdir/usr/share/doc/$pkgname/COPYING"
 }
