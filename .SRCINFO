@@ -1,0 +1,16 @@
+pkgbase = autodock4
+	pkgdesc = Automated docking of flexible ligands to proteins
+	pkgver = 4.2.6
+	pkgrel = 1
+	url = http://autodock.scripps.edu/
+	arch = x86_64
+	arch = i686
+	license = GPL
+	makedepends = gcc
+	makedepends = make
+	makedepends = tcsh
+	depends = gcc-libs
+	source = http://autodock.scripps.edu/downloads/autodock-registration/tars/dist426/autodocksuite-4.2.6-src.tar.gz
+	sha256sums = 4b24ce4baf216a5e1a6a79bb664eeed684aed17cede64ff0061aa1bcc17874c4
+
+pkgname = autodock4
