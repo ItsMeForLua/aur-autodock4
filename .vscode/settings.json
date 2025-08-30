@@ -1,0 +1,38 @@
+{
+  "cSpell.dictionaryDefinitions": [
+    {
+      "name": "custom",
+      "path": "./.vscode/dictionary.txt"
+    }
+  ],
+  "cSpell.customDictionaries": {
+    "custom": {
+      "name": "custom",
+      "path": "./.vscode/dictionary.txt",
+      "addWords": true
+    }
+  },
+  "cSpell.words": [
+    "Jaro",
+    "println",
+    "leanprover",
+    "foldl",
+    "PKGBUILD",
+    "autodock4",
+    "pacman",
+    "noconfirm",
+    "archlinux",
+    "devel",
+    "autogrid",
+    "tcsh",
+    "pkgname",
+    "pkgver",
+    "pkgrel",
+    "pkgdesc",
+    "autoreconf",
+    "pkgdir",
+    "makedepends",
+    "pkgbase",
+    "makepkg"
+  ]
+}
