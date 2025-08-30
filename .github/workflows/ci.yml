@@ -19,7 +19,10 @@ jobs:
     - name: Run Arch Linux container and build package
       run: |
         docker run --rm -v ${{ github.workspace }}:/src -w /src archlinux:latest /bin/bash -c "
-        pacman -Sy --noconfirm archlinux-keyring base-devel tcsh &&
+        pacman -Sy --noconfirm archlinux-keyring base-devel tcsh sudo &&
         useradd -m builduser &&
+        echo 'builduser ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/builduser &&
+        chmod 440 /etc/sudoers.d/builduser &&
         chown -R builduser:builduser /src &&
-        su builduser -c 'makepkg -si --noconfirm'"
+        su builduser -c 'makepkg -f' &&
+        pacman -U --noconfirm *.pkg.tar.zst"
