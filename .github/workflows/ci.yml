@@ -16,8 +16,14 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Run Arch Linux container and build package
+    - name: Run Arch Linux container and build package as non-root
       run: |
         docker run --rm -v ${{ github.workspace }}:/src -w /src archlinux:latest /bin/bash -c "
-        pacman -Sy --noconfirm archlinux-keyring base-devel &&
-        makepkg -si --noconfirm"
+          useradd -m builduser &&
+          chown -R builduser:builduser /src &&
+          su builduser -c '
+            cd /src &&
+            pacman -Sy --noconfirm archlinux-keyring base-devel &&
+            makepkg -si --noconfirm
+          '
+        "
