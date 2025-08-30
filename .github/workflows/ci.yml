@@ -19,7 +19,7 @@ jobs:
     - name: Run Arch Linux container and build package
       run: |
         docker run --rm -v ${{ github.workspace }}:/src -w /src archlinux:latest /bin/bash -c "
-        pacman -Sy --noconfirm archlinux-keyring base-devel &&
+        pacman -Sy --noconfirm archlinux-keyring base-devel tcsh &&
         useradd -m builduser &&
         chown -R builduser:builduser /src &&
         su builduser -c '
