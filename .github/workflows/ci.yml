@@ -16,15 +16,8 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Install dependencies
+    - name: Run Arch Linux container and build package
       run: |
-        sudo pacman -Sy --noconfirm archlinux-keyring base-devel
-      shell: bash
-
-    - name: Setup Arch Linux environment
-      uses: stochastic-arch/setup-archlinux@v1
-
-    - name: Build package
-      run: |
-        makepkg -si --noconfirm
-      shell: bash
+        docker run --rm -v ${{ github.workspace }}:/src -w /src archlinux:latest /bin/bash -c "
+        pacman -Sy --noconfirm archlinux-keyring base-devel &&
+        makepkg -si --noconfirm"
