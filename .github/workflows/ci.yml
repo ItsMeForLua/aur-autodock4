@@ -22,5 +22,4 @@ jobs:
         pacman -Sy --noconfirm archlinux-keyring base-devel tcsh &&
         useradd -m builduser &&
         chown -R builduser:builduser /src &&
-        su builduser -c '
-        makepkg -si --noconfirm'"
+        su builduser -c 'makepkg -si --noconfirm'"
