@@ -11,11 +11,20 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    # The reason for using ubuntu here is simply because, github at the present moment does snapshot: 
+    # -offer an arch linux distro.
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+    # We could use the arch linux bootstrap for github CI/CD, but, the docker container approach-
+    # Is presumably less variable because the official docker containers are not mutatable.
 
+    # Note though that after running the container, you must mount the workspace defined in the-
+    # github CI/CD environment. Second to that is the need to do set up key rings to prevent-
+    # signature issues which will indeed happen if they are not explicitly set up first. 
+    # Third: We proceed with installing the base packages and tools required for the arch linux system.
+    # I'm thinking about adding an init step for the keyrings
+    # I'm also thinking about adding some error handling to the glob in: pacman -U --noconfirm *.pkg.tar.zst"
     - name: Run Arch Linux container and build package
       run: |
         docker run --rm -v ${{ github.workspace }}:/src -w /src archlinux:latest /bin/bash -c "
@@ -26,3 +35,4 @@ jobs:
         chown -R builduser:builduser /src &&
         su builduser -c 'makepkg -f' &&
         pacman -U --noconfirm *.pkg.tar.zst"
+        
